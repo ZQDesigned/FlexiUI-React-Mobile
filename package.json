@@ -1,0 +1,14 @@
+{
+  "name": "flexiui-react-mobile-workspace",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "example"
+  ],
+  "scripts": {
+    "dev": "bun run --filter flexiui-react-mobile-example dev",
+    "build": "bun run --filter flexiui-react-mobile build && bun run --filter flexiui-react-mobile-example build",
+    "build:lib": "bun run --filter flexiui-react-mobile build",
+    "build:example": "bun run --filter flexiui-react-mobile-example build"
+  }
+}
