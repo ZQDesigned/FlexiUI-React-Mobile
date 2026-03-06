@@ -4,6 +4,106 @@ import { alphaColor } from "../../foundation/color";
 import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
 import { useResolvedTheme } from "../../foundation/useResolvedTheme";
 
+type RgbaColor = {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+};
+
+function clampColorChannel(value: number): number {
+  return Math.max(0, Math.min(255, value));
+}
+
+function clampAlpha(value: number): number {
+  return Math.max(0, Math.min(1, value));
+}
+
+function parseCssColor(input: string): RgbaColor | null {
+  const color = input.trim();
+
+  if (color.startsWith("#")) {
+    const hex = color.slice(1);
+
+    if (hex.length === 3 || hex.length === 4) {
+      const r = Number.parseInt(`${hex[0]}${hex[0]}`, 16);
+      const g = Number.parseInt(`${hex[1]}${hex[1]}`, 16);
+      const b = Number.parseInt(`${hex[2]}${hex[2]}`, 16);
+      const a = hex.length === 4 ? Number.parseInt(`${hex[3]}${hex[3]}`, 16) / 255 : 1;
+      return { r, g, b, a };
+    }
+
+    if (hex.length === 6 || hex.length === 8) {
+      const r = Number.parseInt(hex.slice(0, 2), 16);
+      const g = Number.parseInt(hex.slice(2, 4), 16);
+      const b = Number.parseInt(hex.slice(4, 6), 16);
+      const a = hex.length === 8 ? Number.parseInt(hex.slice(6, 8), 16) / 255 : 1;
+      return { r, g, b, a };
+    }
+
+    return null;
+  }
+
+  const rgbMatch = color.match(/^rgba?\((.+)\)$/i);
+  if (!rgbMatch) {
+    return null;
+  }
+
+  const parts = rgbMatch[1].split(",").map((part) => part.trim());
+  if (parts.length < 3 || parts.length > 4) {
+    return null;
+  }
+
+  const parseChannel = (channel: string): number | null => {
+    if (channel.endsWith("%")) {
+      const percent = Number.parseFloat(channel.slice(0, -1));
+      return Number.isFinite(percent) ? clampColorChannel((percent / 100) * 255) : null;
+    }
+    const value = Number.parseFloat(channel);
+    return Number.isFinite(value) ? clampColorChannel(value) : null;
+  };
+
+  const parseAlpha = (alphaChannel: string | undefined): number | null => {
+    if (alphaChannel === undefined) {
+      return 1;
+    }
+    if (alphaChannel.endsWith("%")) {
+      const percent = Number.parseFloat(alphaChannel.slice(0, -1));
+      return Number.isFinite(percent) ? clampAlpha(percent / 100) : null;
+    }
+    const value = Number.parseFloat(alphaChannel);
+    return Number.isFinite(value) ? clampAlpha(value) : null;
+  };
+
+  const r = parseChannel(parts[0]);
+  const g = parseChannel(parts[1]);
+  const b = parseChannel(parts[2]);
+  const a = parseAlpha(parts[3]);
+
+  if (r === null || g === null || b === null || a === null) {
+    return null;
+  }
+
+  return { r, g, b, a };
+}
+
+function mixCssColors(from: string, to: string, ratio: number): string {
+  const safeRatio = Math.max(0, Math.min(1, ratio));
+  const fromColor = parseCssColor(from);
+  const toColor = parseCssColor(to);
+
+  if (!fromColor || !toColor) {
+    return safeRatio < 0.5 ? from : to;
+  }
+
+  const r = Math.round(fromColor.r + (toColor.r - fromColor.r) * safeRatio);
+  const g = Math.round(fromColor.g + (toColor.g - fromColor.g) * safeRatio);
+  const b = Math.round(fromColor.b + (toColor.b - fromColor.b) * safeRatio);
+  const a = Number((fromColor.a + (toColor.a - fromColor.a) * safeRatio).toFixed(3));
+
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+}
+
 export type FlexiSwitchProps = Omit<InputHTMLAttributes<HTMLInputElement>, "type"> &
   FlexiBaseComponentProps & {
     textSize?: number;
@@ -47,6 +147,10 @@ export function FlexiSwitch({
   const trackPadding = 2;
   const thumbSize = trackHeight - trackPadding * 2;
   const thumbTravel = trackWidth - thumbSize - trackPadding * 2;
+  const inactiveTrackColor = trackInActiveTint ?? alphaColor(currentTheme.colors.colorFlexiThemeSecondary, 0.34);
+  const activeTrackColor = trackActiveTint ?? currentTheme.colors.colorFlexiThemePrimary;
+  const inactiveTrackStrokeColor = alphaColor(currentTheme.colors.colorFlexiThemeSecondary, 0.2);
+  const activeTrackStrokeColor = alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.34);
 
   const isChecked = checked ?? internalChecked;
 
@@ -56,8 +160,8 @@ export function FlexiSwitch({
     width: trackWidth,
     height: trackHeight,
     borderRadius: trackHeight / 2,
-    backgroundColor: trackInActiveTint ?? alphaColor(currentTheme.colors.colorFlexiThemeSecondary, 0.34),
-    boxShadow: `inset 0 0 0 1px ${alphaColor(currentTheme.colors.colorFlexiThemeSecondary, 0.2)}`,
+    backgroundColor: inactiveTrackColor,
+    boxShadow: `inset 0 0 0 1px ${inactiveTrackStrokeColor}`,
     transition: "background-color 220ms cubic-bezier(0.2, 0, 0, 1), box-shadow 220ms cubic-bezier(0.2, 0, 0, 1), transform 140ms cubic-bezier(0.2, 0, 0, 1)",
     "::before": {
       content: "\"\"",
@@ -77,8 +181,6 @@ export function FlexiSwitch({
 
   const checkedClassName = css({
     "--flexi-switch-thumb-offset": `${thumbTravel}px`,
-    backgroundColor: trackActiveTint ?? currentTheme.colors.colorFlexiThemePrimary,
-    boxShadow: `inset 0 0 0 1px ${alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.34)}`,
     "::before": {
       boxShadow: `0 2px 6px ${alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.34)}`,
     },
@@ -208,12 +310,13 @@ export function FlexiSwitch({
     event.preventDefault();
   };
 
-  const trackStyle =
-    dragOffset === null
-      ? undefined
-      : ({
-          "--flexi-switch-thumb-offset": `${dragOffset}px`,
-        } as CSSProperties);
+  const currentThumbOffset = dragOffset ?? (isChecked ? thumbTravel : 0);
+  const trackProgress = thumbTravel <= 0 ? (isChecked ? 1 : 0) : currentThumbOffset / thumbTravel;
+  const trackStyle = {
+    "--flexi-switch-thumb-offset": `${currentThumbOffset}px`,
+    backgroundColor: mixCssColors(inactiveTrackColor, activeTrackColor, trackProgress),
+    boxShadow: `inset 0 0 0 1px ${mixCssColors(inactiveTrackStrokeColor, activeTrackStrokeColor, trackProgress)}`,
+  } as CSSProperties;
 
   return (
     <label htmlFor={inputId} className={cx(rootClassName, className)} style={style}>
