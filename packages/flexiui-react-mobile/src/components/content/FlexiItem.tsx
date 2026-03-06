@@ -218,6 +218,7 @@ export function FlexiItem({
     width: "100%",
     borderRadius: currentTheme.dimensions.dimensionFlexiCornerRadiusSecondary,
     border: 0,
+    borderColor: "transparent",
     background: currentTheme.colors.colorFlexiForegroundPrimary,
     color: currentTheme.colors.colorFlexiTextPrimary,
     padding: `${currentTheme.dimensions.dimensionFlexiSpacingTertiary}px ${currentTheme.dimensions.dimensionFlexiSpacingSecondary}px`,
@@ -227,10 +228,24 @@ export function FlexiItem({
     justifyContent: "space-between",
     gap: currentTheme.dimensions.dimensionFlexiSpacingTertiary,
     cursor: "pointer",
+    appearance: "none",
+    WebkitAppearance: "none",
+    outline: "none",
+    boxShadow: "none",
     transition:
-      "background-color 180ms cubic-bezier(0.2, 0, 0, 1), border-color 180ms cubic-bezier(0.2, 0, 0, 1), box-shadow 180ms cubic-bezier(0.2, 0, 0, 1), transform 140ms cubic-bezier(0.2, 0, 0, 1)",
+      "background-color 180ms cubic-bezier(0.2, 0, 0, 1), transform 140ms cubic-bezier(0.2, 0, 0, 1)",
     ":hover:not(:disabled)": {
       background: alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.08),
+    },
+    ":focus": {
+      outline: "none",
+      boxShadow: "none",
+      borderColor: "transparent",
+    },
+    ":focus-visible": {
+      outline: "none",
+      boxShadow: "none",
+      borderColor: "transparent",
     },
     ":active:not(:disabled)": {
       transform: "translateY(1px) scale(0.985)",
