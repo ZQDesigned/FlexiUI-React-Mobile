@@ -346,6 +346,19 @@ export function FlexiInputBox({
     onTextChange?.(nextText);
   };
 
+  const clearInputText = () => {
+    if (isDropdownMode) {
+      if (dropdownItemSelection < 0) {
+        setInternalSelection(-1);
+      }
+      onSelectionChange?.(-1);
+      hideMenu();
+      setHighlightedIndex(-1);
+    }
+
+    updateText("");
+  };
+
   const digitsPattern = digits ? `[^${digits}]` : "";
 
   const applyDigitsFilter = (nextText: string) => {
@@ -559,7 +572,7 @@ export function FlexiInputBox({
       </div>
 
       {showClearTextIcon && currentText ? (
-        <button type="button" className={endIconClassName} onClick={() => updateText("")} title="Clear text">
+        <button type="button" className={endIconClassName} onClick={clearInputText} title="Clear text">
           <FlexiIconFinishClose size={currentTheme.dimensions.dimensionFlexiIconSizeTertiary} color="currentColor" />
         </button>
       ) : null}
