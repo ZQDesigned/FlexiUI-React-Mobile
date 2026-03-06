@@ -236,6 +236,9 @@ export function FlexiItem({
       "background-color 180ms cubic-bezier(0.2, 0, 0, 1), transform 140ms cubic-bezier(0.2, 0, 0, 1)",
     ":hover:not(:disabled)": {
       background: alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.08),
+      boxShadow: "none",
+      WebkitBoxShadow: "none",
+      borderColor: "transparent",
     },
     ":focus": {
       outline: "none",
