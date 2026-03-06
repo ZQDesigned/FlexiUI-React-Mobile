@@ -85,6 +85,9 @@ export function FlexiTabLayout({
     },
   });
 
+  const indicatorWidth = Math.max(currentTheme.dimensions.dimensionFlexiIconSizeTertiary, 20);
+  const indicatorHeight = Math.max(currentTheme.dimensions.dimensionFlexiStrokeSizeSecondary * 2, 2);
+
   const handleTabClick = (index: number) => {
     const item = tabItems[index];
     const wasSelected = index === selectedIndex;
@@ -112,14 +115,12 @@ export function FlexiTabLayout({
       {tabItems.map((item, index) => {
         const selected = index === selectedIndex;
         const tabClassName = css({
+          position: "relative",
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
           gap: currentTheme.dimensions.dimensionFlexiSpacingTertiary,
           border: 0,
-          borderBottom: `${currentTheme.dimensions.dimensionFlexiStrokeSizeSecondary * 2}px solid ${
-            selected ? tabItemIndicatorColor ?? currentTheme.colors.colorFlexiThemePrimary : "transparent"
-          }`,
           background: "transparent",
           color: selected
             ? tabItemSelectedTextColor ?? currentTheme.colors.colorFlexiThemePrimary
@@ -137,6 +138,20 @@ export function FlexiTabLayout({
           flex: effectiveAlignment === "fixed" ? 1 : undefined,
           whiteSpace: "nowrap",
           cursor: "pointer",
+          "::after": {
+            content: "\"\"",
+            position: "absolute",
+            left: "50%",
+            bottom: 0,
+            width: indicatorWidth,
+            height: indicatorHeight,
+            borderRadius: indicatorHeight,
+            background: tabItemIndicatorColor ?? currentTheme.colors.colorFlexiThemePrimary,
+            transform: selected ? "translateX(-50%) scaleX(1)" : "translateX(-50%) scaleX(0.6)",
+            opacity: selected ? 1 : 0,
+            transition:
+              "opacity 180ms cubic-bezier(0.2, 0, 0, 1), transform 180ms cubic-bezier(0.2, 0, 0, 1), background-color 180ms cubic-bezier(0.2, 0, 0, 1)",
+          },
           transition:
             "color 180ms cubic-bezier(0.2, 0, 0, 1), border-color 180ms cubic-bezier(0.2, 0, 0, 1), background-color 180ms cubic-bezier(0.2, 0, 0, 1), transform 140ms cubic-bezier(0.2, 0, 0, 1)",
           ":hover:not(:disabled)": {
