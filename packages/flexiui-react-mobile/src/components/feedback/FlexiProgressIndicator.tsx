@@ -99,17 +99,55 @@ export function FlexiProgressIndicator({
     return <div {...props} className={cx(spinnerClassName, className)} style={style} />;
   }
 
-  const ringMask = `radial-gradient(farthest-side, transparent calc(100% - ${finalTrackThickness}px), #000 calc(100% - ${finalTrackThickness}px))`;
+  const radius = Math.max(finalSize / 2 - finalTrackThickness / 2, 0.001);
+  const circumference = 2 * Math.PI * radius;
+  const progressLength = circumference * normalizedProgress;
+  const remainingLength = Math.max(circumference - progressLength, 0);
+
   const circularClassName = css({
     width: finalSize,
     height: finalSize,
-    borderRadius: "50%",
-    background: `conic-gradient(${finalIndicatorColor} ${normalizedProgress * 360}deg, ${finalDeterminateTrackColor} 0deg)`,
-    WebkitMask: ringMask,
-    mask: ringMask,
+    display: "inline-block",
     boxSizing: "border-box",
-    transition: "background 180ms ease",
   });
 
-  return <div {...props} className={cx(circularClassName, className)} style={style} />;
+  const circularSvgClassName = css({
+    width: "100%",
+    height: "100%",
+    display: "block",
+    transform: "rotate(-90deg)",
+  });
+
+  return (
+    <div {...props} className={cx(circularClassName, className)} style={style}>
+      <svg className={circularSvgClassName} viewBox={`0 0 ${finalSize} ${finalSize}`} aria-hidden="true">
+        {normalizedProgress < 1 ? (
+          <circle
+            cx={finalSize / 2}
+            cy={finalSize / 2}
+            r={radius}
+            fill="none"
+            stroke={finalDeterminateTrackColor}
+            strokeWidth={finalTrackThickness}
+            strokeLinecap="round"
+            strokeDasharray={`${remainingLength} ${circumference}`}
+            strokeDashoffset={-progressLength}
+          />
+        ) : null}
+        {normalizedProgress > 0 ? (
+          <circle
+            cx={finalSize / 2}
+            cy={finalSize / 2}
+            r={radius}
+            fill="none"
+            stroke={finalIndicatorColor}
+            strokeWidth={finalTrackThickness}
+            strokeLinecap="round"
+            strokeDasharray={`${progressLength} ${circumference}`}
+            strokeDashoffset={0}
+          />
+        ) : null}
+      </svg>
+    </div>
+  );
 }
