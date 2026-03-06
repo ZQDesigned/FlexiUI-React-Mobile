@@ -217,7 +217,7 @@ export function FlexiItem({
   const selectorTriggerClassName = css({
     width: "100%",
     borderRadius: currentTheme.dimensions.dimensionFlexiCornerRadiusSecondary,
-    border: `${currentTheme.dimensions.dimensionFlexiStrokeSizeSecondary}px solid ${currentTheme.colors.colorFlexiThemeTertiary}`,
+    border: 0,
     background: currentTheme.colors.colorFlexiForegroundPrimary,
     color: currentTheme.colors.colorFlexiTextPrimary,
     padding: `${currentTheme.dimensions.dimensionFlexiSpacingTertiary}px ${currentTheme.dimensions.dimensionFlexiSpacingSecondary}px`,
