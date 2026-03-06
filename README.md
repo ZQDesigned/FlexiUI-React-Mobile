@@ -87,7 +87,7 @@ Main exports:
 
 - Theme factory: `createFlexiTheme`
 - Token exports: `flexiLightColors`, `flexiDarkColors`, `flexiHighContrastColors`, `flexiPresetPrimaryColors`, `flexiDimensions`
-- Theme presets are kept aligned to values defined in `参数导出.md`
+
 
 ## Example App
 

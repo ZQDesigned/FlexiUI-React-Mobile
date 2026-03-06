@@ -86,7 +86,6 @@ bun run build
 
 - 主题工厂：`createFlexiTheme`
 - Token 导出：`flexiLightColors`、`flexiDarkColors`、`flexiHighContrastColors`、`flexiPresetPrimaryColors`、`flexiDimensions`
-- 主题预置颜色与 `参数导出.md` 中定义值保持对齐
 
 ## 示例应用
 
