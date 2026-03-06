@@ -263,6 +263,7 @@ export function FlexiInputBox({
   });
 
   const menuClassName = css({
+    // Keep dropdown content compact and reserve a small gap for per-item hover/shadow edges.
     position: "absolute",
     zIndex: 8,
     left: 0,
@@ -270,12 +271,15 @@ export function FlexiInputBox({
     width: "100%",
     maxHeight: 240,
     overflowY: "auto",
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
     borderRadius: currentTheme.dimensions.dimensionFlexiCornerRadiusSecondary,
     border: `${currentTheme.dimensions.dimensionFlexiStrokeSizeSecondary}px solid ${currentTheme.colors.colorFlexiThemeTertiary}`,
     background: dropdownBackgroundColor ?? currentTheme.colors.colorFlexiForegroundPrimary,
     color: dropdownItemTextColor ?? currentTheme.colors.colorFlexiTextPrimary,
     fontSize: dropdownItemTextSize ?? currentTheme.dimensions.dimensionFlexiTextSizePrimary,
-    padding: `${currentTheme.dimensions.dimensionFlexiSpacingTertiary}px ${currentTheme.dimensions.dimensionFlexiSpacingSecondary}px`,
+    padding: 2,
     boxShadow: "0 10px 28px rgba(0, 0, 0, 0.16)",
     transformOrigin: "top center",
   });
