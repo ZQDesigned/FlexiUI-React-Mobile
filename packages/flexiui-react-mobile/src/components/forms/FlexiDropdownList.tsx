@@ -2,6 +2,7 @@ import { css, cx, keyframes } from "@emotion/css";
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
   type FocusEvent,
   type InputHTMLAttributes,
@@ -114,10 +115,12 @@ export function FlexiDropdownList({
   ...props
 }: FlexiDropdownListProps) {
   const currentTheme = useResolvedTheme(theme);
+  const rootRef = useRef<HTMLDivElement>(null);
   const [menuPhase, setMenuPhase] = useState<"closed" | "opening" | "open" | "closing">("closed");
   const [items, setItems] = useState<FlexiDropdownItem[]>(() => normalizeItems(dataSets));
   const [internalSelection, setInternalSelection] = useState(dropdownItemSelection);
   const [internalValue, setInternalValue] = useState("");
+  const [menuMaxHeight, setMenuMaxHeight] = useState(220);
   const menuVisible = menuPhase !== "closed";
 
   useEffect(() => {
@@ -137,6 +140,46 @@ export function FlexiDropdownList({
   const selectedValue = selectedIndex >= 0 ? (items[selectedIndex]?.value ?? items[selectedIndex]?.label ?? "") : "";
   const effectiveSelectedIndex = allowInputEvents && internalValue !== selectedValue ? -1 : selectedIndex;
   const showClearButton = allowInputEvents && internalValue.length > 0;
+  const optionVerticalSpacing = currentTheme.dimensions.dimensionFlexiSpacingTertiary + 2;
+  const optionHorizontalSpacing = currentTheme.dimensions.dimensionFlexiSpacingSecondary + 2;
+
+  useEffect(() => {
+    if (dropdownHeight > 0) {
+      setMenuMaxHeight(dropdownHeight);
+      return;
+    }
+
+    if (!menuVisible) {
+      return;
+    }
+
+    const updateMaxHeight = () => {
+      if (!rootRef.current) {
+        return;
+      }
+
+      const rootRect = rootRef.current.getBoundingClientRect();
+      const topOffset = dropdownVerticalOffset ?? currentTheme.dimensions.dimensionFlexiZoomSizeTertiary;
+      const viewportPadding = currentTheme.dimensions.dimensionFlexiSpacingSecondary + 2;
+      const availableHeight = Math.floor(window.innerHeight - (rootRect.bottom + topOffset) - viewportPadding);
+      setMenuMaxHeight(Math.max(120, availableHeight));
+    };
+
+    updateMaxHeight();
+    window.addEventListener("resize", updateMaxHeight);
+    window.addEventListener("scroll", updateMaxHeight, true);
+
+    return () => {
+      window.removeEventListener("resize", updateMaxHeight);
+      window.removeEventListener("scroll", updateMaxHeight, true);
+    };
+  }, [
+    currentTheme.dimensions.dimensionFlexiSpacingSecondary,
+    currentTheme.dimensions.dimensionFlexiZoomSizeTertiary,
+    dropdownHeight,
+    dropdownVerticalOffset,
+    menuVisible,
+  ]);
 
   const filteredItems = useMemo(() => {
     if (!allowInputEvents || !internalValue) {
@@ -207,12 +250,12 @@ export function FlexiDropdownList({
     left: dropdownHorizontalOffset,
     top: `calc(100% + ${dropdownVerticalOffset ?? currentTheme.dimensions.dimensionFlexiZoomSizeTertiary}px)`,
     width: dropdownWidth > 0 ? dropdownWidth : "100%",
-    maxHeight: dropdownHeight > 0 ? dropdownHeight : 220,
+    maxHeight: dropdownHeight > 0 ? dropdownHeight : menuMaxHeight,
     overflowY: "auto",
     borderRadius: currentTheme.dimensions.dimensionFlexiCornerRadiusSecondary,
     border: `${currentTheme.dimensions.dimensionFlexiStrokeSizeSecondary}px solid ${currentTheme.colors.colorFlexiThemeTertiary}`,
     background: dropdownBackgroundColor ?? currentTheme.colors.colorFlexiForegroundPrimary,
-    padding: currentTheme.dimensions.dimensionFlexiSpacingTertiary,
+    padding: optionVerticalSpacing,
     boxShadow: "0 6px 24px rgba(0, 0, 0, 0.14)",
     transformOrigin: "top center",
   });
@@ -303,7 +346,7 @@ export function FlexiDropdownList({
   };
 
   return (
-    <div className={cx(rootClassName, className)} style={style}>
+    <div ref={rootRef} className={cx(rootClassName, className)} style={style}>
       <input
         {...props}
         type={inputType ?? "text"}
@@ -360,10 +403,10 @@ export function FlexiDropdownList({
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              gap: currentTheme.dimensions.dimensionFlexiSpacingTertiary,
+              gap: optionVerticalSpacing,
               border: 0,
               borderRadius: currentTheme.dimensions.dimensionFlexiCornerRadiusSecondary,
-              padding: `${currentTheme.dimensions.dimensionFlexiSpacingTertiary}px ${currentTheme.dimensions.dimensionFlexiSpacingSecondary}px`,
+              padding: `${optionVerticalSpacing}px ${optionHorizontalSpacing}px`,
               background: selected
                 ? alphaColor(dropdownSelectionItemTint ?? currentTheme.colors.colorFlexiThemePrimary, 0.3)
                 : "transparent",
@@ -410,7 +453,7 @@ export function FlexiDropdownList({
           {!filteredItems.length ? (
             <div
               style={{
-                padding: `${currentTheme.dimensions.dimensionFlexiSpacingTertiary}px ${currentTheme.dimensions.dimensionFlexiSpacingSecondary}px`,
+                padding: `${optionVerticalSpacing}px ${optionHorizontalSpacing}px`,
                 color: currentTheme.colors.colorFlexiTextSecondary,
                 fontSize: currentTheme.dimensions.dimensionFlexiTextSizeSecondary,
               }}
