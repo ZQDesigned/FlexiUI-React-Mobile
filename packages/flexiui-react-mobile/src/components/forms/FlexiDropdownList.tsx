@@ -357,6 +357,11 @@ export function FlexiDropdownList({
         className={inputClassName}
         readOnly={!allowInputEvents}
         onFocus={handleFocus}
+        onPointerDown={() => {
+          if (shownWhenFocused) {
+            showMenu();
+          }
+        }}
         onBlur={handleBlur}
         onChange={(event) => {
           const nextValue = event.target.value;
