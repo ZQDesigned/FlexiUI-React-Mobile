@@ -347,7 +347,7 @@ export function FlexiInputBox({
   };
 
   const clearInputText = () => {
-    if (isDropdownMode) {
+    if (isDropdownMode || isAutoCompleteMode) {
       if (dropdownItemSelection < 0) {
         setInternalSelection(-1);
       }
