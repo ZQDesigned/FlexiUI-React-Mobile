@@ -7,7 +7,6 @@ It includes:
 
 - A reusable React + TypeScript component library
 - A Vite example app for preview and manual verification
-- Design docs and implementation notes aligned to `参数导出.md`
 
 ## Project Goals
 
@@ -23,8 +22,6 @@ It includes:
 ├─ packages/
 │  └─ flexiui-react-mobile/      # Component library package
 ├─ example/                      # React + Vite + TS preview app
-├─ docs/                         # ADR and coverage docs
-├─ 参数导出.md                    # Android-side exported parameters
 └─ package.json                  # Workspace scripts
 ```
 
