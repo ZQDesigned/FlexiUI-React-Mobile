@@ -49,8 +49,8 @@ export function FlexiProgressIndicator({
 }: FlexiProgressIndicatorProps) {
   const currentTheme = useResolvedTheme(theme);
   const finalIndicatorColor = indicatorColor ?? currentTheme.colors.colorFlexiThemePrimary;
-  const finalTrackColor = trackColor ?? "transparent";
   const finalDeterminateTrackColor = determinateTrackColor ?? currentTheme.colors.colorFlexiThemeTertiary;
+  const finalTrackColor = trackColor ?? finalDeterminateTrackColor;
   const finalTrackThickness = trackThickness ?? currentTheme.dimensions.dimensionFlexiZoomSizeTertiary / 2;
   const finalTrackRadius = trackCornerRadius ?? currentTheme.dimensions.dimensionFlexiCornerRadiusSecondary;
 
@@ -90,7 +90,7 @@ export function FlexiProgressIndicator({
       width: finalSize,
       height: finalSize,
       borderRadius: "50%",
-      border: `${finalTrackThickness}px solid ${finalDeterminateTrackColor}`,
+      border: `${finalTrackThickness}px solid ${finalTrackColor}`,
       borderTopColor: finalIndicatorColor,
       animation: `${circularIndeterminateKeyframe} 900ms linear infinite`,
       boxSizing: "border-box",
@@ -99,25 +99,17 @@ export function FlexiProgressIndicator({
     return <div {...props} className={cx(spinnerClassName, className)} style={style} />;
   }
 
+  const ringMask = `radial-gradient(farthest-side, transparent calc(100% - ${finalTrackThickness}px), #000 calc(100% - ${finalTrackThickness}px))`;
   const circularClassName = css({
     width: finalSize,
     height: finalSize,
     borderRadius: "50%",
     background: `conic-gradient(${finalIndicatorColor} ${normalizedProgress * 360}deg, ${finalDeterminateTrackColor} 0deg)`,
-    padding: finalTrackThickness,
+    WebkitMask: ringMask,
+    mask: ringMask,
     boxSizing: "border-box",
+    transition: "background 180ms ease",
   });
 
-  const innerClassName = css({
-    width: "100%",
-    height: "100%",
-    borderRadius: "50%",
-    backgroundColor: finalTrackColor,
-  });
-
-  return (
-    <div {...props} className={cx(circularClassName, className)} style={style}>
-      <div className={innerClassName} />
-    </div>
-  );
+  return <div {...props} className={cx(circularClassName, className)} style={style} />;
 }

@@ -302,9 +302,15 @@ function App() {
                 valueLabelBehavior="alwaysVisible"
                 valueLabelFormatter="{valueInt}%"
               />
+              <FlexiText secondary>Determinate</FlexiText>
               <div className="inlineItems">
-                <FlexiProgressIndicator indicatorType="linear" indeterminate={false} progress={sliderValue} />
+                <FlexiProgressIndicator indicatorType="linear" indeterminate={false} progress={sliderValue} style={{ width: 140 }} />
                 <FlexiProgressIndicator indicatorType="circular" indeterminate={false} progress={sliderValue} />
+              </div>
+              <FlexiText secondary>Indeterminate</FlexiText>
+              <div className="inlineItems">
+                <FlexiProgressIndicator indicatorType="linear" style={{ width: 140 }} />
+                <FlexiProgressIndicator indicatorType="circular" />
               </div>
             </div>
 

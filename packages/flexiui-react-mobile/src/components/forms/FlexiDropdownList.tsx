@@ -2,7 +2,6 @@ import { css, cx, keyframes } from "@emotion/css";
 import {
   useEffect,
   useMemo,
-  useRef,
   useState,
   type FocusEvent,
   type InputHTMLAttributes,
@@ -36,7 +35,6 @@ export type FlexiDropdownListProps = Omit<InputHTMLAttributes<HTMLInputElement>,
     allowInputEvents?: boolean;
     allowRemoveItem?: boolean;
     shownWhenFocused?: boolean;
-    clearWhenLongClick?: boolean;
     onValueChange?: (value: string) => void;
     onSelectionChange?: (index: number, item: FlexiDropdownItem) => void;
   };
@@ -47,6 +45,22 @@ function normalizeItems(dataSets: FlexiDropdownListProps["dataSets"]): FlexiDrop
   }
 
   return dataSets.map((item) => (typeof item === "string" ? { label: item, value: item } : { label: item.label, value: item.value ?? item.label }));
+}
+
+function isSameItems(left: FlexiDropdownItem[], right: FlexiDropdownItem[]): boolean {
+  if (left.length !== right.length) {
+    return false;
+  }
+
+  for (let index = 0; index < left.length; index += 1) {
+    const leftItem = left[index];
+    const rightItem = right[index];
+    if (!leftItem || !rightItem || leftItem.label !== rightItem.label || leftItem.value !== rightItem.value) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 const dropdownEnterKeyframes = keyframes({
@@ -92,7 +106,6 @@ export function FlexiDropdownList({
   allowInputEvents = false,
   allowRemoveItem = false,
   shownWhenFocused = true,
-  clearWhenLongClick = true,
   onFocus,
   onBlur,
   onValueChange,
@@ -100,7 +113,6 @@ export function FlexiDropdownList({
   ...props
 }: FlexiDropdownListProps) {
   const currentTheme = useResolvedTheme(theme);
-  const longPressTimerRef = useRef<number | null>(null);
   const [menuPhase, setMenuPhase] = useState<"closed" | "opening" | "open" | "closing">("closed");
   const [items, setItems] = useState<FlexiDropdownItem[]>(() => normalizeItems(dataSets));
   const [internalSelection, setInternalSelection] = useState(dropdownItemSelection);
@@ -108,7 +120,8 @@ export function FlexiDropdownList({
   const menuVisible = menuPhase !== "closed";
 
   useEffect(() => {
-    setItems(normalizeItems(dataSets));
+    const nextItems = normalizeItems(dataSets);
+    setItems((previous) => (isSameItems(previous, nextItems) ? previous : nextItems));
   }, [dataSets]);
 
   useEffect(() => {
@@ -120,6 +133,9 @@ export function FlexiDropdownList({
   }, [dropdownItemSelection, items]);
 
   const selectedIndex = dropdownItemSelection >= 0 ? dropdownItemSelection : internalSelection;
+  const selectedValue = selectedIndex >= 0 ? (items[selectedIndex]?.value ?? items[selectedIndex]?.label ?? "") : "";
+  const effectiveSelectedIndex = allowInputEvents && internalValue !== selectedValue ? -1 : selectedIndex;
+  const showClearButton = allowInputEvents && internalValue.length > 0;
 
   const filteredItems = useMemo(() => {
     if (!allowInputEvents || !internalValue) {
@@ -143,10 +159,40 @@ export function FlexiDropdownList({
     color: currentTheme.colors.colorFlexiTextPrimary,
     fontSize: currentTheme.dimensions.dimensionFlexiTextSizePrimary,
     padding: `${currentTheme.dimensions.dimensionFlexiSpacingSecondary}px ${currentTheme.dimensions.dimensionFlexiSpacingPrimary}px`,
+    paddingRight: showClearButton
+      ? currentTheme.dimensions.dimensionFlexiSpacingPrimary + currentTheme.dimensions.dimensionFlexiIconSizeSecondary + currentTheme.dimensions.dimensionFlexiSpacingTertiary
+      : undefined,
     outline: "none",
     transition: "border-color 160ms ease",
     ":focus": {
       borderColor: currentTheme.colors.colorFlexiThemePrimary,
+    },
+  });
+
+  const clearButtonClassName = css({
+    position: "absolute",
+    right: currentTheme.dimensions.dimensionFlexiSpacingTertiary,
+    top: "50%",
+    transform: "translateY(-50%)",
+    width: currentTheme.dimensions.dimensionFlexiIconSizeSecondary,
+    height: currentTheme.dimensions.dimensionFlexiIconSizeSecondary,
+    borderRadius: "50%",
+    border: 0,
+    padding: 0,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: currentTheme.dimensions.dimensionFlexiTextSizeSecondary,
+    color: currentTheme.colors.colorFlexiThemeSecondary,
+    background: "transparent",
+    cursor: "pointer",
+    transition: "background-color 140ms ease, color 140ms ease",
+    ":hover": {
+      backgroundColor: alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.1),
+      color: currentTheme.colors.colorFlexiThemePrimary,
+    },
+    ":active": {
+      backgroundColor: alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.18),
     },
   });
 
@@ -209,24 +255,6 @@ export function FlexiDropdownList({
     hideMenu();
   };
 
-  const onLongPressStart = () => {
-    if (!clearWhenLongClick) {
-      return;
-    }
-
-    longPressTimerRef.current = window.setTimeout(() => {
-      setInternalSelection(-1);
-      setValue("");
-    }, 600);
-  };
-
-  const onLongPressEnd = () => {
-    if (longPressTimerRef.current !== null) {
-      window.clearTimeout(longPressTimerRef.current);
-      longPressTimerRef.current = null;
-    }
-  };
-
   const removeItem = (event: MouseEvent<HTMLButtonElement>, index: number) => {
     event.stopPropagation();
     setItems((previous) => previous.filter((_, itemIndex) => itemIndex !== index));
@@ -278,11 +306,30 @@ export function FlexiDropdownList({
         readOnly={!allowInputEvents}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        onChange={(event) => setValue(event.target.value)}
-        onPointerDown={onLongPressStart}
-        onPointerUp={onLongPressEnd}
-        onPointerCancel={onLongPressEnd}
+        onChange={(event) => {
+          const nextValue = event.target.value;
+          if (allowInputEvents && dropdownItemSelection < 0 && internalSelection >= 0) {
+            setInternalSelection(-1);
+          }
+          setValue(nextValue);
+        }}
       />
+      {showClearButton ? (
+        <button
+          type="button"
+          className={clearButtonClassName}
+          aria-label="Clear input"
+          onMouseDown={(event) => event.preventDefault()}
+          onClick={() => {
+            if (dropdownItemSelection < 0) {
+              setInternalSelection(-1);
+            }
+            setValue("");
+          }}
+        >
+          ×
+        </button>
+      ) : null}
 
       {menuVisible ? (
         <div
@@ -300,7 +347,7 @@ export function FlexiDropdownList({
           }}
         >
           {filteredItems.map((item, index) => {
-            const selected = index === selectedIndex;
+            const selected = index === effectiveSelectedIndex;
             const optionClassName = css({
               width: "100%",
               textAlign: "left",

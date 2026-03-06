@@ -1,4 +1,4 @@
-import { flexiDarkColors, flexiHighContrastColors, flexiLightColors, flexiPresetPrimaryColors } from "../tokens/colors";
+import { flexiDarkColors, flexiHighContrastColors, flexiLightColors, flexiPresetThemeOverrides } from "../tokens/colors";
 import { flexiDimensions } from "../tokens/dimensions";
 import type { FlexiTheme, FlexiThemeBase, FlexiThemePreset, FlexiThemeVariant } from "./types";
 
@@ -14,16 +14,13 @@ export function createFlexiTheme(options: CreateThemeOptions = {}): FlexiTheme {
   const preset = options.preset ?? "default";
 
   const variantColors = getVariantColors(variant);
-  const presetPrimary = flexiPresetPrimaryColors[preset];
+  const colors = applyPresetOverrides(variantColors, variant, preset);
 
   return {
     base,
     variant,
     preset,
-    colors: {
-      ...variantColors,
-      colorFlexiThemePrimary: presetPrimary,
-    },
+    colors,
     dimensions: flexiDimensions,
   };
 }
@@ -38,4 +35,16 @@ function getVariantColors(variant: FlexiThemeVariant) {
     default:
       return flexiLightColors;
   }
+}
+
+function applyPresetOverrides(variantColors: FlexiTheme["colors"], variant: FlexiThemeVariant, preset: FlexiThemePreset): FlexiTheme["colors"] {
+  if (preset === "default" || variant === "highContrast") {
+    return variantColors;
+  }
+
+  const presetVariant = variant === "dark" ? "dark" : "light";
+  return {
+    ...variantColors,
+    ...flexiPresetThemeOverrides[preset][presetVariant],
+  };
 }

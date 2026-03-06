@@ -1,5 +1,5 @@
 function normalizeHex(hexColor: string): string {
-  const raw = hexColor.trim().replace("#", "");
+  const raw = hexColor.trim().replace("#", "").toUpperCase();
 
   if (raw.length === 3) {
     return raw
@@ -9,7 +9,8 @@ function normalizeHex(hexColor: string): string {
   }
 
   if (raw.length === 8) {
-    return raw.slice(2);
+    // CSS 8-digit hex is #RRGGBBAA; only RGB is needed here.
+    return raw.slice(0, 6);
   }
 
   return raw;
