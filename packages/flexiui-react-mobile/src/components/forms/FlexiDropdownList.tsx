@@ -140,8 +140,10 @@ export function FlexiDropdownList({
   const selectedValue = selectedIndex >= 0 ? (items[selectedIndex]?.value ?? items[selectedIndex]?.label ?? "") : "";
   const effectiveSelectedIndex = allowInputEvents && internalValue !== selectedValue ? -1 : selectedIndex;
   const showClearButton = allowInputEvents && internalValue.length > 0;
-  const optionVerticalSpacing = currentTheme.dimensions.dimensionFlexiSpacingTertiary + 2;
-  const optionHorizontalSpacing = currentTheme.dimensions.dimensionFlexiSpacingSecondary + 2;
+  const optionVerticalPadding = currentTheme.dimensions.dimensionFlexiSpacingTertiary;
+  const optionHorizontalPadding = currentTheme.dimensions.dimensionFlexiSpacingSecondary;
+  const optionShadowGap = 2;
+  const menuContentPadding = currentTheme.dimensions.dimensionFlexiSpacingTertiary + optionShadowGap;
 
   useEffect(() => {
     if (dropdownHeight > 0) {
@@ -252,10 +254,13 @@ export function FlexiDropdownList({
     width: dropdownWidth > 0 ? dropdownWidth : "100%",
     maxHeight: dropdownHeight > 0 ? dropdownHeight : menuMaxHeight,
     overflowY: "auto",
+    display: "flex",
+    flexDirection: "column",
+    gap: optionShadowGap,
     borderRadius: currentTheme.dimensions.dimensionFlexiCornerRadiusSecondary,
     border: `${currentTheme.dimensions.dimensionFlexiStrokeSizeSecondary}px solid ${currentTheme.colors.colorFlexiThemeTertiary}`,
     background: dropdownBackgroundColor ?? currentTheme.colors.colorFlexiForegroundPrimary,
-    padding: optionVerticalSpacing,
+    padding: menuContentPadding,
     boxShadow: "0 6px 24px rgba(0, 0, 0, 0.14)",
     transformOrigin: "top center",
   });
@@ -403,10 +408,10 @@ export function FlexiDropdownList({
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              gap: optionVerticalSpacing,
+              gap: currentTheme.dimensions.dimensionFlexiSpacingTertiary,
               border: 0,
               borderRadius: currentTheme.dimensions.dimensionFlexiCornerRadiusSecondary,
-              padding: `${optionVerticalSpacing}px ${optionHorizontalSpacing}px`,
+              padding: `${optionVerticalPadding}px ${optionHorizontalPadding}px`,
               background: selected
                 ? alphaColor(dropdownSelectionItemTint ?? currentTheme.colors.colorFlexiThemePrimary, 0.3)
                 : "transparent",
@@ -453,7 +458,7 @@ export function FlexiDropdownList({
           {!filteredItems.length ? (
             <div
               style={{
-                padding: `${optionVerticalSpacing}px ${optionHorizontalSpacing}px`,
+                padding: `${optionVerticalPadding}px ${optionHorizontalPadding}px`,
                 color: currentTheme.colors.colorFlexiTextSecondary,
                 fontSize: currentTheme.dimensions.dimensionFlexiTextSizeSecondary,
               }}
