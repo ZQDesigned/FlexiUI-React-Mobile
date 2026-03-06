@@ -221,6 +221,7 @@ export function FlexiInputBox({
     width: "100%",
     border: 0,
     outline: "none",
+    boxShadow: "none",
     background: "transparent",
     color: textColor ?? currentTheme.colors.colorFlexiTextPrimary,
     fontSize: textSize ?? currentTheme.dimensions.dimensionFlexiTextSizePrimary,
@@ -228,6 +229,14 @@ export function FlexiInputBox({
     minHeight: currentTheme.dimensions.dimensionFlexiIconSizeTertiary + 2,
     "::placeholder": {
       color: hintTextColor ?? currentTheme.colors.colorFlexiThemeSecondary,
+    },
+    ":focus": {
+      outline: "none",
+      boxShadow: "none",
+    },
+    ":focus-visible": {
+      outline: "none",
+      boxShadow: "none",
     },
   });
 
