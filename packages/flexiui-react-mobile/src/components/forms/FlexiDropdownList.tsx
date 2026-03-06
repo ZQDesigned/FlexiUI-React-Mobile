@@ -37,7 +37,7 @@ export type FlexiDropdownListProps = Omit<InputHTMLAttributes<HTMLInputElement>,
     allowRemoveItem?: boolean;
     shownWhenFocused?: boolean;
     onValueChange?: (value: string) => void;
-    onSelectionChange?: (index: number, item: FlexiDropdownItem) => void;
+    onSelectionChange?: (index: number, item?: FlexiDropdownItem) => void;
   };
 
 function normalizeItems(dataSets: FlexiDropdownListProps["dataSets"]): FlexiDropdownItem[] {
@@ -194,6 +194,10 @@ export function FlexiDropdownList({
     },
     ":active": {
       backgroundColor: alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.18),
+      transform: "translateY(-50%)",
+    },
+    ":focus-visible": {
+      boxShadow: "none",
     },
   });
 
@@ -262,6 +266,7 @@ export function FlexiDropdownList({
     if (selectedIndex === index) {
       setInternalSelection(-1);
       setValue("");
+      onSelectionChange?.(-1);
     }
   };
 
@@ -322,10 +327,10 @@ export function FlexiDropdownList({
           aria-label="Clear input"
           onMouseDown={(event) => event.preventDefault()}
           onClick={() => {
-            if (dropdownItemSelection < 0) {
-              setInternalSelection(-1);
-            }
+            setInternalSelection(-1);
             setValue("");
+            onSelectionChange?.(-1);
+            hideMenu();
           }}
         >
           <FlexiIconFinishClose size={currentTheme.dimensions.dimensionFlexiIconSizeTertiary} color="currentColor" />
