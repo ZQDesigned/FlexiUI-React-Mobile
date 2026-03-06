@@ -203,6 +203,7 @@ export function FlexiAutoCompleteText({
   };
 
   const removeItem = (event: MouseEvent<HTMLButtonElement>, item: FlexiDropdownItem) => {
+    event.preventDefault();
     event.stopPropagation();
     setItems((previous) => previous.filter((entry) => entry.value !== item.value || entry.label !== item.label));
   };
@@ -313,12 +314,25 @@ export function FlexiAutoCompleteText({
             });
 
             return (
-              <div key={`${item.value}-${index}`} className={optionClassName} onMouseDown={() => selectItem(index, item)} role="button" tabIndex={-1}>
+              <div
+                key={`${item.value}-${index}`}
+                className={optionClassName}
+                role="button"
+                tabIndex={-1}
+                onMouseDown={(event) => {
+                  event.preventDefault();
+                }}
+                onClick={() => selectItem(index, item)}
+              >
                 <span className={textClassName}>{highlightLabel(item.label)}</span>
                 {allowRemoveItem ? (
                   <button
                     type="button"
-                    onMouseDown={(event) => removeItem(event, item)}
+                    onMouseDown={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                    }}
+                    onClick={(event) => removeItem(event, item)}
                     style={{
                       border: 0,
                       background: "transparent",

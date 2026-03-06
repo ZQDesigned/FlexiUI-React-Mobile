@@ -429,8 +429,8 @@ export function FlexiItem({
                       className={optionClassName}
                       onMouseDown={(event) => {
                         event.preventDefault();
-                        handleSelectionChange(index);
                       }}
+                      onClick={() => handleSelectionChange(index)}
                     >
                       {value}
                     </button>

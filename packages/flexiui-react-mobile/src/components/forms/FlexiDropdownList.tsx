@@ -306,6 +306,7 @@ export function FlexiDropdownList({
   };
 
   const removeItem = (event: MouseEvent<HTMLButtonElement>, index: number) => {
+    event.preventDefault();
     event.stopPropagation();
     setItems((previous) => previous.filter((_, itemIndex) => itemIndex !== index));
     if (selectedIndex === index) {
@@ -438,12 +439,25 @@ export function FlexiDropdownList({
             });
 
             return (
-              <div key={`${item.value}-${index}`} className={optionClassName} onMouseDown={() => selectItem(index, item)} role="button" tabIndex={-1}>
+              <div
+                key={`${item.value}-${index}`}
+                className={optionClassName}
+                role="button"
+                tabIndex={-1}
+                onMouseDown={(event) => {
+                  event.preventDefault();
+                }}
+                onClick={() => selectItem(index, item)}
+              >
                 <span className={textClassName}>{highlightLabel(item.label)}</span>
                 {allowRemoveItem ? (
                   <button
                     type="button"
-                    onMouseDown={(event) => removeItem(event, index)}
+                    onMouseDown={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                    }}
+                    onClick={(event) => removeItem(event, index)}
                     style={{
                       border: 0,
                       background: "transparent",

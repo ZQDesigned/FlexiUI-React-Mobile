@@ -556,8 +556,8 @@ export function FlexiInputBox({
                     onMouseEnter={() => setHighlightedIndex(index)}
                     onMouseDown={(event) => {
                       event.preventDefault();
-                      selectItem(item);
                     }}
+                    onClick={() => selectItem(item)}
                   >
                     {item.label}
                   </button>
