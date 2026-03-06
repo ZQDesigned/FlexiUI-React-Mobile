@@ -49,7 +49,7 @@ export function FlexiSlider({
   const finalIndicatorColor = indicatorColor ?? currentTheme.colors.colorFlexiThemePrimary;
   const finalTrackColor = trackColor ?? currentTheme.colors.colorFlexiThemeTertiary;
   const finalThumbColor = thumbColor ?? finalIndicatorColor;
-  const finalThumbSize = thumbSize ?? currentTheme.dimensions.dimensionFlexiZoomSizeSecondary;
+  const finalThumbSize = thumbSize ?? Math.max(currentTheme.dimensions.dimensionFlexiZoomSizePrimary, 16);
 
   const safeRange = Math.max(valueTo - valueFrom, 1);
   const progressPercent = Math.max(0, Math.min(((currentValue - valueFrom) / safeRange) * 100, 100));
