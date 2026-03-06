@@ -68,13 +68,18 @@ body {
 }
 
 .stickyDemo {
+  display: flex;
+  flex-direction: column;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 10px;
   max-height: 160px;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .stickyContent {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
   padding: 10px 14px 14px;
   display: flex;
   flex-direction: column;

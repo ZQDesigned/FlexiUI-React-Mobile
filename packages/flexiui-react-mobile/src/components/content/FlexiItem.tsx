@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type HTMLAttributes, type ReactNode } from
 import { alphaColor } from "../../foundation/color";
 import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
 import { useResolvedTheme } from "../../foundation/useResolvedTheme";
+import { FlexiIconArrowForward } from "../icons";
 import { FlexiSwitch } from "../forms/FlexiSwitch";
 
 export type FlexiItemOrientation = "horizontal" | "vertical";
@@ -199,6 +200,11 @@ export function FlexiItem({
   const arrowClassName = css({
     color: selected ? arrowSelectedTint ?? currentTheme.colors.colorFlexiThemePrimary : arrowTint ?? currentTheme.colors.colorFlexiTextPrimary,
     opacity: arrowAlpha,
+    width: currentTheme.dimensions.dimensionFlexiIconSizeTertiary,
+    height: currentTheme.dimensions.dimensionFlexiIconSizeTertiary,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
     flexShrink: 0,
   });
 
@@ -322,7 +328,11 @@ export function FlexiItem({
         </div>
       </div>
 
-      {orientation === "horizontal" && itemStyle === "normal" && showFlagArrow ? <span className={arrowClassName}>›</span> : null}
+      {orientation === "horizontal" && itemStyle === "normal" && showFlagArrow ? (
+        <span className={arrowClassName}>
+          <FlexiIconArrowForward size={currentTheme.dimensions.dimensionFlexiIconSizeTertiary} color="currentColor" />
+        </span>
+      ) : null}
 
       {itemStyle === "switcher" ? (
         <FlexiSwitch checked={switchChecked} onCheckedChange={handleSwitchChange} />

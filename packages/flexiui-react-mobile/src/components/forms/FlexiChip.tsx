@@ -3,6 +3,7 @@ import { useState, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { alphaColor } from "../../foundation/color";
 import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
 import { useResolvedTheme } from "../../foundation/useResolvedTheme";
+import { FlexiIconCheck } from "../icons";
 
 export type FlexiChipAppearance = "normal" | "checkbox" | "candidate";
 
@@ -83,7 +84,11 @@ export function FlexiChip({
 
   return (
     <button {...props} className={cx(chipClassName, className)} style={style} onClick={handleClick} type="button">
-      {(chipAppearance === "checkbox" || chipAppearance === "candidate") && isChecked ? "✓" : chipIcon}
+      {(chipAppearance === "checkbox" || chipAppearance === "candidate") && isChecked ? (
+        <FlexiIconCheck size={currentTheme.dimensions.dimensionFlexiIconSizeTertiary} color="currentColor" />
+      ) : (
+        chipIcon
+      )}
       {children}
     </button>
   );

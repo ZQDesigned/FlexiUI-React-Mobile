@@ -10,6 +10,13 @@ import {
   FlexiDropdownList,
   FlexiEditText,
   FlexiIcon,
+  FlexiIconArrowDropDown,
+  FlexiIconArrowDropUp,
+  FlexiIconArrowForward,
+  FlexiIconArrowNaviUp,
+  FlexiIconCheck,
+  FlexiIconFinishClose,
+  FlexiIconSearch,
   FlexiImage,
   FlexiInputBox,
   FlexiItem,
@@ -183,10 +190,13 @@ function App() {
             <div className="demoItem">
               <FlexiText>FlexiIcon</FlexiText>
               <div className="inlineItems">
-                <FlexiIcon icon="⭐" tintStyle="themePrimary" rippleEffect />
-                <FlexiIcon icon="⚙️" tintStyle="themeSecondary" rippleEffect />
-                <FlexiIcon icon="📝" tintStyle="textPrimary" rippleEffect />
-                <FlexiIcon icon="🔔" tintStyle="custom" tint="#ff5a5f" rippleEffect />
+                <FlexiIcon icon={<FlexiIconArrowDropDown size={20} color="currentColor" />} tintStyle="themePrimary" rippleEffect />
+                <FlexiIcon icon={<FlexiIconArrowDropUp size={20} color="currentColor" />} tintStyle="themeSecondary" rippleEffect />
+                <FlexiIcon icon={<FlexiIconArrowForward size={20} color="currentColor" />} tintStyle="textPrimary" rippleEffect />
+                <FlexiIcon icon={<FlexiIconArrowNaviUp size={20} color="currentColor" />} tintStyle="custom" tint="#ff5a5f" rippleEffect />
+                <FlexiIcon icon={<FlexiIconCheck size={20} color="currentColor" />} tintStyle="themePrimary" rippleEffect />
+                <FlexiIcon icon={<FlexiIconFinishClose size={20} color="currentColor" />} tintStyle="themeSecondary" rippleEffect />
+                <FlexiIcon icon={<FlexiIconSearch size={20} color="currentColor" />} tintStyle="textPrimary" rippleEffect />
               </div>
             </div>
 

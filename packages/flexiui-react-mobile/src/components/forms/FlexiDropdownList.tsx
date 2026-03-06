@@ -10,6 +10,7 @@ import {
 import { alphaColor } from "../../foundation/color";
 import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
 import { useResolvedTheme } from "../../foundation/useResolvedTheme";
+import { FlexiIconFinishClose } from "../icons";
 
 export type FlexiDropdownItem = {
   label: string;
@@ -327,7 +328,7 @@ export function FlexiDropdownList({
             setValue("");
           }}
         >
-          ×
+          <FlexiIconFinishClose size={currentTheme.dimensions.dimensionFlexiIconSizeTertiary} color="currentColor" />
         </button>
       ) : null}
 
@@ -395,7 +396,7 @@ export function FlexiDropdownList({
                       color: currentTheme.colors.colorFlexiThemeSecondary,
                     }}
                   >
-                    ✕
+                    <FlexiIconFinishClose size={currentTheme.dimensions.dimensionFlexiIconSizeTertiary} color="currentColor" />
                   </button>
                 ) : null}
               </div>

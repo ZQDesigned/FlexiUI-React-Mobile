@@ -2,6 +2,7 @@ import { css, cx } from "@emotion/css";
 import type { HTMLAttributes, MouseEventHandler, ReactNode } from "react";
 import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
 import { useResolvedTheme } from "../../foundation/useResolvedTheme";
+import { FlexiIconArrowNaviUp, FlexiIconFinishClose } from "../icons";
 
 export type FlexiAppBarStyle = "primary" | "secondary";
 
@@ -56,12 +57,12 @@ export function FlexiAppBar({
   subtitleTextSize,
   actionIconSize,
   actionIconTint,
-  finishIcon = "✕",
+  finishIcon,
   finishIconSize,
   finishIconPadding = 0,
   finishIconTint,
   finishIconTooltipText = "Done",
-  navigationUpIcon = "←",
+  navigationUpIcon,
   navigationUpIconSize,
   navigationUpIconPadding = 0,
   navigationUpIconTint,
@@ -78,6 +79,8 @@ export function FlexiAppBar({
   const currentTheme = useResolvedTheme(theme);
   const finalActionIconSize = actionIconSize ?? currentTheme.dimensions.dimensionFlexiIconSizeSecondary;
   const finalActionIconTint = actionIconTint ?? currentTheme.colors.colorFlexiTextPrimary;
+  const finalNavigationUpIconSize = navigationUpIconSize ?? finalActionIconSize * 0.7;
+  const finalFinishIconSize = finishIconSize ?? finalActionIconSize * 0.7;
 
   const rootClassName = css({
     display: "flex",
@@ -156,7 +159,7 @@ export function FlexiAppBar({
           onClick={onNavigationUpClick}
           style={{ color: navigationUpIconTint ?? finalActionIconTint, padding: navigationUpIconPadding }}
         >
-          <span style={{ fontSize: navigationUpIconSize ?? finalActionIconSize * 0.7 }}>{navigationUpIcon}</span>
+          {navigationUpIcon ?? <FlexiIconArrowNaviUp size={finalNavigationUpIconSize} color="currentColor" />}
         </button>
       ) : null}
 
@@ -168,7 +171,7 @@ export function FlexiAppBar({
           onClick={onFinishClick}
           style={{ color: finishIconTint ?? finalActionIconTint, padding: finishIconPadding }}
         >
-          <span style={{ fontSize: finishIconSize ?? finalActionIconSize * 0.7 }}>{finishIcon}</span>
+          {finishIcon ?? <FlexiIconFinishClose size={finalFinishIconSize} color="currentColor" />}
         </button>
       ) : null}
 

@@ -69,6 +69,11 @@ export function FlexiStickyHeaderBar({
     fontSize: textSize ?? currentTheme.dimensions.dimensionFlexiTextSizePrimary,
     lineHeight: 1.3,
     fontWeight: 600,
+    flex: 1,
+    minWidth: 0,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   });
 
   return (

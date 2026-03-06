@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState, type FocusEvent, type InputHTMLAttributes
 import { alphaColor } from "../../foundation/color";
 import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
 import { useResolvedTheme } from "../../foundation/useResolvedTheme";
+import { FlexiIconFinishClose } from "../icons";
 import type { FlexiDropdownItem } from "./FlexiDropdownList";
 
 export type FlexiAutoCompleteTextProps = Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "onChange"> &
@@ -325,7 +326,7 @@ export function FlexiAutoCompleteText({
                       cursor: "pointer",
                     }}
                   >
-                    ✕
+                    <FlexiIconFinishClose size={currentTheme.dimensions.dimensionFlexiIconSizeTertiary} color="currentColor" />
                   </button>
                 ) : null}
               </div>
