@@ -190,9 +190,9 @@ export function FlexiInputBox({
 
   const resolvedPadding = {
     left: boxPadding ?? boxPaddingLeft ?? currentTheme.dimensions.dimensionFlexiSpacingPrimary,
-    top: boxPadding ?? boxPaddingTop ?? currentTheme.dimensions.dimensionFlexiSpacingPrimary,
+    top: boxPadding ?? boxPaddingTop ?? currentTheme.dimensions.dimensionFlexiSpacingSecondary,
     right: boxPadding ?? boxPaddingRight ?? currentTheme.dimensions.dimensionFlexiSpacingPrimary,
-    bottom: boxPadding ?? boxPaddingBottom ?? currentTheme.dimensions.dimensionFlexiSpacingPrimary,
+    bottom: boxPadding ?? boxPaddingBottom ?? currentTheme.dimensions.dimensionFlexiSpacingSecondary,
   };
 
   const borderColor = focused
