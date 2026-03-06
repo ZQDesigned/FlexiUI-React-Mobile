@@ -1,4 +1,4 @@
-import { css, cx } from "@emotion/css";
+import { css, cx, keyframes } from "@emotion/css";
 import {
   useEffect,
   useMemo,
@@ -8,9 +8,9 @@ import {
   type InputHTMLAttributes,
   type MouseEvent,
 } from "react";
-import { alphaColor } from "../foundation/color";
-import type { FlexiBaseComponentProps } from "../foundation/componentTypes";
-import { useResolvedTheme } from "../foundation/useResolvedTheme";
+import { alphaColor } from "../../foundation/color";
+import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
+import { useResolvedTheme } from "../../foundation/useResolvedTheme";
 
 export type FlexiDropdownItem = {
   label: string;
@@ -49,6 +49,28 @@ function normalizeItems(dataSets: FlexiDropdownListProps["dataSets"]): FlexiDrop
   return dataSets.map((item) => (typeof item === "string" ? { label: item, value: item } : { label: item.label, value: item.value ?? item.label }));
 }
 
+const dropdownEnterKeyframes = keyframes({
+  "0%": {
+    opacity: 0,
+    transform: "translateY(-6px) scale(0.985)",
+  },
+  "100%": {
+    opacity: 1,
+    transform: "translateY(0) scale(1)",
+  },
+});
+
+const dropdownExitKeyframes = keyframes({
+  "0%": {
+    opacity: 1,
+    transform: "translateY(0) scale(1)",
+  },
+  "100%": {
+    opacity: 0,
+    transform: "translateY(-4px) scale(0.99)",
+  },
+});
+
 export function FlexiDropdownList({
   theme,
   className,
@@ -79,10 +101,11 @@ export function FlexiDropdownList({
 }: FlexiDropdownListProps) {
   const currentTheme = useResolvedTheme(theme);
   const longPressTimerRef = useRef<number | null>(null);
-  const [open, setOpen] = useState(false);
+  const [menuPhase, setMenuPhase] = useState<"closed" | "opening" | "open" | "closing">("closed");
   const [items, setItems] = useState<FlexiDropdownItem[]>(() => normalizeItems(dataSets));
   const [internalSelection, setInternalSelection] = useState(dropdownItemSelection);
   const [internalValue, setInternalValue] = useState("");
+  const menuVisible = menuPhase !== "closed";
 
   useEffect(() => {
     setItems(normalizeItems(dataSets));
@@ -140,18 +163,36 @@ export function FlexiDropdownList({
     background: dropdownBackgroundColor ?? currentTheme.colors.colorFlexiForegroundPrimary,
     padding: currentTheme.dimensions.dimensionFlexiSpacingTertiary,
     boxShadow: "0 6px 24px rgba(0, 0, 0, 0.14)",
+    transformOrigin: "top center",
   });
+
+  const menuOpeningClassName = css({
+    animation: `${dropdownEnterKeyframes} 180ms cubic-bezier(0.2, 0.88, 0.28, 1.05)`,
+  });
+
+  const menuClosingClassName = css({
+    animation: `${dropdownExitKeyframes} 150ms cubic-bezier(0.4, 0, 1, 1) forwards`,
+    pointerEvents: "none",
+  });
+
+  const showMenu = () => {
+    setMenuPhase((phase) => (phase === "closed" || phase === "closing" ? "opening" : phase));
+  };
+
+  const hideMenu = () => {
+    setMenuPhase((phase) => (phase === "open" || phase === "opening" ? "closing" : phase));
+  };
 
   const handleFocus = (event: FocusEvent<HTMLInputElement>) => {
     if (shownWhenFocused) {
-      setOpen(true);
+      showMenu();
     }
     onFocus?.(event);
   };
 
   const handleBlur = (event: FocusEvent<HTMLInputElement>) => {
     window.setTimeout(() => {
-      setOpen(false);
+      hideMenu();
     }, 100);
     onBlur?.(event);
   };
@@ -165,7 +206,7 @@ export function FlexiDropdownList({
     setInternalSelection(index);
     setValue(item.value ?? item.label);
     onSelectionChange?.(index, item);
-    setOpen(false);
+    hideMenu();
   };
 
   const onLongPressStart = () => {
@@ -243,8 +284,21 @@ export function FlexiDropdownList({
         onPointerCancel={onLongPressEnd}
       />
 
-      {open ? (
-        <div className={menuClassName}>
+      {menuVisible ? (
+        <div
+          className={cx(menuClassName, menuPhase === "opening" && menuOpeningClassName, menuPhase === "closing" && menuClosingClassName)}
+          onAnimationEnd={() => {
+            setMenuPhase((phase) => {
+              if (phase === "opening") {
+                return "open";
+              }
+              if (phase === "closing") {
+                return "closed";
+              }
+              return phase;
+            });
+          }}
+        >
           {filteredItems.map((item, index) => {
             const selected = index === selectedIndex;
             const optionClassName = css({
@@ -264,6 +318,13 @@ export function FlexiDropdownList({
               fontSize: dropdownItemTextSize ?? currentTheme.dimensions.dimensionFlexiTextSizePrimary,
               lineHeight: 1.3,
               cursor: "pointer",
+              transition: "background-color 160ms cubic-bezier(0.2, 0, 0, 1), transform 120ms cubic-bezier(0.2, 0, 0, 1)",
+              ":hover": {
+                background: alphaColor(dropdownSelectionItemTint ?? currentTheme.colors.colorFlexiThemePrimary, 0.2),
+              },
+              ":active": {
+                transform: "translateY(1px) scale(0.99)",
+              },
             });
 
             const textClassName = css({

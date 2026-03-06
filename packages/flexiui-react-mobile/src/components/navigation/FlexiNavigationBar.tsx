@@ -1,8 +1,8 @@
 import { css, cx } from "@emotion/css";
 import { useMemo, useState, type HTMLAttributes } from "react";
-import { alphaColor } from "../foundation/color";
-import type { FlexiBaseComponentProps } from "../foundation/componentTypes";
-import { useResolvedTheme } from "../foundation/useResolvedTheme";
+import { alphaColor } from "../../foundation/color";
+import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
+import { useResolvedTheme } from "../../foundation/useResolvedTheme";
 import type { FlexiTabItem } from "./FlexiTabLayout";
 
 export type FlexiNavigationBarState = "selected" | "reselected";
@@ -95,6 +95,14 @@ export function FlexiNavigationBar({
           gap: currentTheme.dimensions.dimensionFlexiSpacingTertiary,
           fontSize: currentTheme.dimensions.dimensionFlexiTextSizeSecondary,
           cursor: "pointer",
+          transition:
+            "color 180ms cubic-bezier(0.2, 0, 0, 1), background-color 180ms cubic-bezier(0.2, 0, 0, 1), transform 140ms cubic-bezier(0.2, 0, 0, 1)",
+          ":hover:not(:disabled)": {
+            background: selected ? finalIndicatorColor : alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.08),
+          },
+          ":active:not(:disabled)": {
+            transform: "translateY(1px) scale(0.985)",
+          },
         });
 
         return (

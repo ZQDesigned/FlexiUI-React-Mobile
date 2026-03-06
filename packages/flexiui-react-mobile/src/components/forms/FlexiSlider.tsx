@@ -1,7 +1,8 @@
 import { css, cx } from "@emotion/css";
 import { useMemo, useState, type ChangeEvent, type InputHTMLAttributes } from "react";
-import type { FlexiBaseComponentProps } from "../foundation/componentTypes";
-import { useResolvedTheme } from "../foundation/useResolvedTheme";
+import { alphaColor } from "../../foundation/color";
+import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
+import { useResolvedTheme } from "../../foundation/useResolvedTheme";
 
 export type FlexiValueLabelBehavior = "floatOnSliding" | "alwaysVisible" | "alwaysGone";
 
@@ -71,6 +72,7 @@ export function FlexiSlider({
       height: 6,
       borderRadius: 999,
       background: `linear-gradient(to right, ${finalIndicatorColor} 0%, ${finalIndicatorColor} ${progressPercent}%, ${finalTrackColor} ${progressPercent}%, ${finalTrackColor} 100%)`,
+      transition: "background 180ms cubic-bezier(0.2, 0, 0, 1)",
     },
     "::-webkit-slider-thumb": {
       appearance: "none",
@@ -80,6 +82,12 @@ export function FlexiSlider({
       borderRadius: "50%",
       backgroundColor: finalThumbColor,
       border: "none",
+      boxShadow: `0 1px 3px ${alphaColor("#000000", 0.24)}`,
+      transition: "transform 160ms cubic-bezier(0.2, 0, 0, 1), box-shadow 160ms cubic-bezier(0.2, 0, 0, 1)",
+    },
+    ":active::-webkit-slider-thumb": {
+      transform: "scale(1.12)",
+      boxShadow: `0 0 0 6px ${alphaColor(finalIndicatorColor, 0.2)}`,
     },
     "::-moz-range-track": {
       height: 6,
@@ -98,6 +106,12 @@ export function FlexiSlider({
       borderRadius: "50%",
       backgroundColor: finalThumbColor,
       border: "none",
+      boxShadow: `0 1px 3px ${alphaColor("#000000", 0.24)}`,
+      transition: "transform 160ms cubic-bezier(0.2, 0, 0, 1), box-shadow 160ms cubic-bezier(0.2, 0, 0, 1)",
+    },
+    ":active::-moz-range-thumb": {
+      transform: "scale(1.12)",
+      boxShadow: `0 0 0 6px ${alphaColor(finalIndicatorColor, 0.2)}`,
     },
   });
 

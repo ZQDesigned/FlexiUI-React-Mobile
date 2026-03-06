@@ -1,7 +1,8 @@
 import { css, cx } from "@emotion/css";
 import { useState, type ButtonHTMLAttributes, type ReactNode } from "react";
-import type { FlexiBaseComponentProps } from "../foundation/componentTypes";
-import { useResolvedTheme } from "../foundation/useResolvedTheme";
+import { alphaColor } from "../../foundation/color";
+import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
+import { useResolvedTheme } from "../../foundation/useResolvedTheme";
 
 export type FlexiChipAppearance = "normal" | "checkbox" | "candidate";
 
@@ -47,7 +48,24 @@ export function FlexiChip({
     fontSize: currentTheme.dimensions.dimensionFlexiTextSizePrimary,
     padding: `${currentTheme.dimensions.dimensionFlexiSpacingTertiary}px ${currentTheme.dimensions.dimensionFlexiSpacingSecondary}px`,
     cursor: "pointer",
-    transition: "all 180ms ease",
+    transition:
+      "background-color 180ms cubic-bezier(0.2, 0, 0, 1), border-color 180ms cubic-bezier(0.2, 0, 0, 1), color 180ms cubic-bezier(0.2, 0, 0, 1), box-shadow 180ms cubic-bezier(0.2, 0, 0, 1), transform 140ms cubic-bezier(0.2, 0, 0, 1)",
+    ":hover:not(:disabled)": {
+      backgroundColor: isChecked
+        ? alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.2)
+        : alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.1),
+    },
+    ":active:not(:disabled)": {
+      transform: "translateY(1px) scale(0.985)",
+    },
+    ":focus-visible": {
+      outline: "none",
+      boxShadow: `0 0 0 3px ${alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.24)}`,
+    },
+    ":disabled": {
+      opacity: 0.55,
+      cursor: "not-allowed",
+    },
   });
 
   const handleClick: ButtonHTMLAttributes<HTMLButtonElement>["onClick"] = (event) => {

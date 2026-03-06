@@ -1,7 +1,8 @@
 import { css, cx } from "@emotion/css";
 import { useState, type HTMLAttributes } from "react";
-import type { FlexiBaseComponentProps } from "../foundation/componentTypes";
-import { useResolvedTheme } from "../foundation/useResolvedTheme";
+import { alphaColor } from "../../foundation/color";
+import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
+import { useResolvedTheme } from "../../foundation/useResolvedTheme";
 import type { FlexiTabItem } from "./FlexiTabLayout";
 
 export type FlexiTabChipState = "selected" | "reselected" | "unselected";
@@ -51,6 +52,7 @@ export function FlexiTabChip({
     alignItems: "center",
     gap: tabItemSpacing ?? currentTheme.dimensions.dimensionFlexiSpacingSecondary,
     overflowX: "auto",
+    overflowY: "hidden",
     paddingBottom: 2,
     scrollbarWidth: "none",
     msOverflowStyle: "none",
@@ -111,6 +113,20 @@ export function FlexiTabChip({
           alignItems: "center",
           gap: currentTheme.dimensions.dimensionFlexiSpacingTertiary,
           cursor: "pointer",
+          transition:
+            "color 180ms cubic-bezier(0.2, 0, 0, 1), background-color 180ms cubic-bezier(0.2, 0, 0, 1), transform 140ms cubic-bezier(0.2, 0, 0, 1)",
+          ":hover:not(:disabled)": {
+            background: selected
+              ? tabItemSelectedBackgroundColor ?? alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.2)
+              : alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.1),
+          },
+          ":active:not(:disabled)": {
+            transform: "translateY(1px) scale(0.985)",
+          },
+          ":focus-visible": {
+            outline: "none",
+            boxShadow: `inset 0 0 0 2px ${alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.32)}`,
+          },
         });
 
         return (

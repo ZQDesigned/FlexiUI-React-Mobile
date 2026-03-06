@@ -1,24 +1,32 @@
 import { useMemo, useState } from "react";
 import {
   FlexiAppBar,
+  FlexiAppBarLayout,
+  FlexiAreaLinearLayout,
   FlexiAutoCompleteText,
   FlexiButton,
   FlexiCheckBox,
   FlexiChip,
   FlexiDropdownList,
   FlexiEditText,
+  FlexiIcon,
+  FlexiImage,
   FlexiInputBox,
   FlexiItem,
   FlexiNavigationBar,
+  FlexiLinearLayout,
   FlexiProgressIndicator,
   FlexiProvider,
   FlexiRadioButton,
+  FlexiRootLinearLayout,
+  FlexiScroll,
   FlexiSlider,
   FlexiStickyHeaderBar,
   FlexiSwitch,
   FlexiTabChip,
   FlexiTabLayout,
   FlexiText,
+  FlexiWindowInsetsLayout,
   createFlexiTheme,
   type FlexiTabItem,
   type FlexiRenderStrategy,
@@ -58,6 +66,9 @@ function App() {
   const [mode, setMode] = useState<"editText" | "dropdownText" | "autoCompleteText">("editText");
 
   const theme = useMemo(() => createFlexiTheme({ variant, preset }), [variant, preset]);
+  const variantSelection = Math.max(0, variants.indexOf(variant));
+  const presetSelection = Math.max(0, presets.indexOf(preset));
+  const strategySelection = Math.max(0, strategies.indexOf(strategy));
 
   return (
     <FlexiProvider theme={theme} renderStrategy={strategy}>
@@ -83,35 +94,29 @@ function App() {
           <div className="controls">
             <label>
               Variant
-              <select value={variant} onChange={(event) => setVariant(event.target.value as FlexiThemeVariant)}>
-                {variants.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
+              <FlexiDropdownList
+                dataSets={variants}
+                dropdownItemSelection={variantSelection}
+                onSelectionChange={(index) => setVariant(variants[index] ?? variant)}
+              />
             </label>
 
             <label>
               Preset
-              <select value={preset} onChange={(event) => setPreset(event.target.value as FlexiThemePreset)}>
-                {presets.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
+              <FlexiDropdownList
+                dataSets={presets}
+                dropdownItemSelection={presetSelection}
+                onSelectionChange={(index) => setPreset(presets[index] ?? preset)}
+              />
             </label>
 
             <label>
               Strategy
-              <select value={strategy} onChange={(event) => setStrategy(event.target.value as FlexiRenderStrategy)}>
-                {strategies.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
+              <FlexiDropdownList
+                dataSets={strategies}
+                dropdownItemSelection={strategySelection}
+                onSelectionChange={(index) => setStrategy(strategies[index] ?? strategy)}
+              />
             </label>
           </div>
 
@@ -173,6 +178,78 @@ function App() {
                 allowRemoveItem
               />
               <FlexiText secondary>value: {autoCompleteValue || "-"}</FlexiText>
+            </div>
+
+            <div className="demoItem">
+              <FlexiText>FlexiIcon</FlexiText>
+              <div className="inlineItems">
+                <FlexiIcon icon="⭐" tintStyle="themePrimary" rippleEffect />
+                <FlexiIcon icon="⚙️" tintStyle="themeSecondary" rippleEffect />
+                <FlexiIcon icon="📝" tintStyle="textPrimary" rippleEffect />
+                <FlexiIcon icon="🔔" tintStyle="custom" tint="#ff5a5f" rippleEffect />
+              </div>
+            </div>
+
+            <div className="demoItem">
+              <FlexiText>FlexiImage</FlexiText>
+              <FlexiImage
+                src="https://picsum.photos/seed/flexiui/640/260"
+                alt="demo"
+                cornerRadius={18}
+                style={{ maxHeight: 180 }}
+              />
+            </div>
+
+            <div className="demoItem">
+              <FlexiText>FlexiScroll</FlexiText>
+              <div className="scrollWrap">
+                <FlexiScroll style={{ maxHeight: 140, paddingRight: 6 }}>
+                  {Array.from({ length: 12 }).map((_, index) => (
+                    <FlexiText key={index} secondary>
+                      Scroll item #{index + 1}
+                    </FlexiText>
+                  ))}
+                </FlexiScroll>
+              </div>
+            </div>
+
+            <div className="demoItem">
+              <FlexiText>FlexiText</FlexiText>
+              <FlexiText>Primary text style</FlexiText>
+              <FlexiText secondaryTextStyle>Secondary text style</FlexiText>
+            </div>
+
+            <div className="demoItem">
+              <FlexiText>FlexiLinearLayout</FlexiText>
+              <FlexiLinearLayout orientation="vertical" showDividers="middle" dividerHeight={1}>
+                <FlexiText>Row 1</FlexiText>
+                <FlexiText>Row 2</FlexiText>
+                <FlexiText>Row 3</FlexiText>
+              </FlexiLinearLayout>
+            </div>
+
+            <div className="demoItem">
+              <FlexiText>FlexiWindowInsetsLayout</FlexiText>
+              <FlexiWindowInsetsLayout className="insetsDemo" windowInsetsType="safeDrawingIgnoringIme">
+                <FlexiText>Safe area aware container</FlexiText>
+              </FlexiWindowInsetsLayout>
+            </div>
+
+            <div className="demoItem">
+              <FlexiText>FlexiRootLinearLayout + FlexiAreaLinearLayout</FlexiText>
+              <FlexiRootLinearLayout className="rootDemo">
+                <FlexiAreaLinearLayout className="areaDemo" orientation="vertical" rippleEffect>
+                  <FlexiText>Inside root + area layout</FlexiText>
+                  <FlexiText secondaryTextStyle>Safe-area and box style demo</FlexiText>
+                </FlexiAreaLinearLayout>
+              </FlexiRootLinearLayout>
+            </div>
+
+            <div className="demoItem">
+              <FlexiText>FlexiAppBarLayout</FlexiText>
+              <FlexiAppBarLayout className="appBarLayoutDemo">
+                <FlexiText>Child content with auto top margin</FlexiText>
+              </FlexiAppBarLayout>
             </div>
 
             <div className="demoItem">

@@ -1,7 +1,7 @@
 import { css, cx } from "@emotion/css";
 import { useMemo, useState, type FocusEvent, type InputHTMLAttributes } from "react";
-import type { FlexiBaseComponentProps } from "../foundation/componentTypes";
-import { useResolvedTheme } from "../foundation/useResolvedTheme";
+import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
+import { useResolvedTheme } from "../../foundation/useResolvedTheme";
 
 export type FlexiEditTextProps = Omit<InputHTMLAttributes<HTMLInputElement>, "size"> &
   FlexiBaseComponentProps & {

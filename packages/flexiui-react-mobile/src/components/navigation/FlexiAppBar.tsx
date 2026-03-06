@@ -1,7 +1,7 @@
 import { css, cx } from "@emotion/css";
 import type { HTMLAttributes, MouseEventHandler, ReactNode } from "react";
-import type { FlexiBaseComponentProps } from "../foundation/componentTypes";
-import { useResolvedTheme } from "../foundation/useResolvedTheme";
+import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
+import { useResolvedTheme } from "../../foundation/useResolvedTheme";
 
 export type FlexiAppBarStyle = "primary" | "secondary";
 

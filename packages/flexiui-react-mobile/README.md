@@ -14,6 +14,12 @@ Notes:
 
 Implemented components (first batch):
 
+- `FlexiAppBarLayout`
+- `FlexiAreaCoordinatorLayout`
+- `FlexiAreaConstraintLayout`
+- `FlexiAreaFrameLayout`
+- `FlexiAreaLinearLayout`
+- `FlexiAreaRelativeLayout`
 - `FlexiAppBar`
 - `FlexiAutoCompleteText`
 - `FlexiButton`
@@ -21,14 +27,24 @@ Implemented components (first batch):
 - `FlexiChip`
 - `FlexiDropdownList`
 - `FlexiEditText`
+- `FlexiIcon`
+- `FlexiImage`
 - `FlexiInputBox`
 - `FlexiItem`
 - `FlexiNavigationBar`
 - `FlexiProgressIndicator`
 - `FlexiRadioButton`
+- `FlexiRootCoordinatorLayout`
+- `FlexiRootConstraintLayout`
+- `FlexiRootFrameLayout`
+- `FlexiRootLinearLayout`
+- `FlexiRootRelativeLayout`
+- `FlexiScroll`
 - `FlexiSlider`
 - `FlexiStickyHeaderBar`
 - `FlexiSwitch`
 - `FlexiTabChip`
 - `FlexiTabLayout`
 - `FlexiText`
+- `FlexiLinearLayout`
+- `FlexiWindowInsetsLayout`

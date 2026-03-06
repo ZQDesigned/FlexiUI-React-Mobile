@@ -1,7 +1,8 @@
 import { css, cx } from "@emotion/css";
 import { useMemo, useState, type HTMLAttributes, type ReactNode } from "react";
-import type { FlexiBaseComponentProps } from "../foundation/componentTypes";
-import { useResolvedTheme } from "../foundation/useResolvedTheme";
+import { alphaColor } from "../../foundation/color";
+import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
+import { useResolvedTheme } from "../../foundation/useResolvedTheme";
 
 export type FlexiTabAlignment = "scrollable" | "fixed" | "auto";
 export type FlexiTabState = "selected" | "reselected" | "unselected";
@@ -74,8 +75,14 @@ export function FlexiTabLayout({
   const rootClassName = css({
     display: "flex",
     overflowX: effectiveAlignment === "scrollable" ? "auto" : "hidden",
+    overflowY: "hidden",
     borderBottom: `${currentTheme.dimensions.dimensionFlexiStrokeSizeSecondary}px solid ${currentTheme.colors.colorFlexiThemeTertiary}`,
     gap: effectiveAlignment === "scrollable" ? currentTheme.dimensions.dimensionFlexiSpacingTertiary : 0,
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
+    "::-webkit-scrollbar": {
+      display: "none",
+    },
   });
 
   const handleTabClick = (index: number) => {
@@ -130,6 +137,18 @@ export function FlexiTabLayout({
           flex: effectiveAlignment === "fixed" ? 1 : undefined,
           whiteSpace: "nowrap",
           cursor: "pointer",
+          transition:
+            "color 180ms cubic-bezier(0.2, 0, 0, 1), border-color 180ms cubic-bezier(0.2, 0, 0, 1), background-color 180ms cubic-bezier(0.2, 0, 0, 1), transform 140ms cubic-bezier(0.2, 0, 0, 1)",
+          ":hover:not(:disabled)": {
+            background: alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.08),
+          },
+          ":active:not(:disabled)": {
+            transform: "translateY(1px) scale(0.985)",
+          },
+          ":focus-visible": {
+            outline: "none",
+            boxShadow: `inset 0 0 0 2px ${alphaColor(currentTheme.colors.colorFlexiThemePrimary, 0.32)}`,
+          },
         });
 
         return (

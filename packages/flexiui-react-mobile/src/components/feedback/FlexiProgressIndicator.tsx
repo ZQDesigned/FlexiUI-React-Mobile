@@ -1,7 +1,7 @@
 import { css, cx, keyframes } from "@emotion/css";
 import type { HTMLAttributes } from "react";
-import type { FlexiBaseComponentProps } from "../foundation/componentTypes";
-import { useResolvedTheme } from "../foundation/useResolvedTheme";
+import type { FlexiBaseComponentProps } from "../../foundation/componentTypes";
+import { useResolvedTheme } from "../../foundation/useResolvedTheme";
 
 export type FlexiIndicatorType = "circular" | "linear";
 

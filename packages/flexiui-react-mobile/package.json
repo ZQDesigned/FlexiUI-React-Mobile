@@ -10,6 +10,30 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./actions": {
+      "types": "./dist/components/actions/index.d.ts",
+      "import": "./dist/components/actions/index.js"
+    },
+    "./content": {
+      "types": "./dist/components/content/index.d.ts",
+      "import": "./dist/components/content/index.js"
+    },
+    "./feedback": {
+      "types": "./dist/components/feedback/index.d.ts",
+      "import": "./dist/components/feedback/index.js"
+    },
+    "./forms": {
+      "types": "./dist/components/forms/index.d.ts",
+      "import": "./dist/components/forms/index.js"
+    },
+    "./layout": {
+      "types": "./dist/components/layout/index.d.ts",
+      "import": "./dist/components/layout/index.js"
+    },
+    "./navigation": {
+      "types": "./dist/components/navigation/index.d.ts",
+      "import": "./dist/components/navigation/index.js"
     }
   },
   "files": [
