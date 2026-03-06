@@ -273,9 +273,6 @@ export function FlexiInputBox({
     width: "100%",
     maxHeight: 240,
     overflowY: "auto",
-    display: "flex",
-    flexDirection: "column",
-    gap: optionShadowGap,
     borderRadius: currentTheme.dimensions.dimensionFlexiCornerRadiusSecondary,
     border: `${currentTheme.dimensions.dimensionFlexiStrokeSizeSecondary}px solid ${currentTheme.colors.colorFlexiThemeTertiary}`,
     background: dropdownBackgroundColor ?? currentTheme.colors.colorFlexiForegroundPrimary,
@@ -531,6 +528,7 @@ export function FlexiInputBox({
                   textAlign: "left",
                   borderRadius: currentTheme.dimensions.dimensionFlexiCornerRadiusSecondary,
                   padding: `${currentTheme.dimensions.dimensionFlexiSpacingTertiary}px ${currentTheme.dimensions.dimensionFlexiSpacingSecondary}px`,
+                  marginBottom: optionShadowGap,
                   cursor: "pointer",
                   display: "block",
                   overflow: "hidden",
@@ -542,6 +540,9 @@ export function FlexiInputBox({
                   },
                   ":active": {
                     transform: "translateY(1px) scale(0.99)",
+                  },
+                  ":last-of-type": {
+                    marginBottom: 0,
                   },
                 });
 

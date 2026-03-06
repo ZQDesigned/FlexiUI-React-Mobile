@@ -140,9 +140,9 @@ export function FlexiDropdownList({
   const selectedValue = selectedIndex >= 0 ? (items[selectedIndex]?.value ?? items[selectedIndex]?.label ?? "") : "";
   const effectiveSelectedIndex = allowInputEvents && internalValue !== selectedValue ? -1 : selectedIndex;
   const showClearButton = allowInputEvents && internalValue.length > 0;
+  const optionShadowGap = 2;
   const optionVerticalPadding = currentTheme.dimensions.dimensionFlexiSpacingTertiary;
   const optionHorizontalPadding = currentTheme.dimensions.dimensionFlexiSpacingSecondary;
-  const optionShadowGap = 2;
   const menuContentPadding = currentTheme.dimensions.dimensionFlexiSpacingTertiary + optionShadowGap;
 
   useEffect(() => {
@@ -248,20 +248,17 @@ export function FlexiDropdownList({
 
   const menuClassName = css({
     position: "absolute",
-    zIndex: 6,
+    zIndex: 8,
     left: dropdownHorizontalOffset,
     top: `calc(100% + ${dropdownVerticalOffset ?? currentTheme.dimensions.dimensionFlexiZoomSizeTertiary}px)`,
     width: dropdownWidth > 0 ? dropdownWidth : "100%",
     maxHeight: dropdownHeight > 0 ? dropdownHeight : menuMaxHeight,
     overflowY: "auto",
-    display: "flex",
-    flexDirection: "column",
-    gap: optionShadowGap,
     borderRadius: currentTheme.dimensions.dimensionFlexiCornerRadiusSecondary,
     border: `${currentTheme.dimensions.dimensionFlexiStrokeSizeSecondary}px solid ${currentTheme.colors.colorFlexiThemeTertiary}`,
     background: dropdownBackgroundColor ?? currentTheme.colors.colorFlexiForegroundPrimary,
     padding: menuContentPadding,
-    boxShadow: "0 6px 24px rgba(0, 0, 0, 0.14)",
+    boxShadow: "0 10px 28px rgba(0, 0, 0, 0.16)",
     transformOrigin: "top center",
   });
 
@@ -412,27 +409,32 @@ export function FlexiDropdownList({
               border: 0,
               borderRadius: currentTheme.dimensions.dimensionFlexiCornerRadiusSecondary,
               padding: `${optionVerticalPadding}px ${optionHorizontalPadding}px`,
+              marginBottom: optionShadowGap,
               background: selected
-                ? alphaColor(dropdownSelectionItemTint ?? currentTheme.colors.colorFlexiThemePrimary, 0.3)
+                ? alphaColor(dropdownSelectionItemTint ?? currentTheme.colors.colorFlexiThemePrimary, 0.12)
                 : "transparent",
               color: dropdownItemTextColor ?? currentTheme.colors.colorFlexiTextPrimary,
               fontSize: dropdownItemTextSize ?? currentTheme.dimensions.dimensionFlexiTextSizePrimary,
-              lineHeight: 1.3,
               cursor: "pointer",
               transition: "background-color 160ms cubic-bezier(0.2, 0, 0, 1), transform 120ms cubic-bezier(0.2, 0, 0, 1)",
               ":hover": {
-                background: alphaColor(dropdownSelectionItemTint ?? currentTheme.colors.colorFlexiThemePrimary, 0.2),
+                background: alphaColor(dropdownSelectionItemTint ?? currentTheme.colors.colorFlexiThemePrimary, 0.14),
               },
               ":active": {
                 transform: "translateY(1px) scale(0.99)",
+              },
+              ":last-of-type": {
+                marginBottom: 0,
               },
             });
 
             const textClassName = css({
               overflow: "hidden",
-              display: "-webkit-box",
-              WebkitLineClamp: Math.max(1, dropdownItemTextMaxLines),
-              WebkitBoxOrient: "vertical",
+              display: Math.max(1, dropdownItemTextMaxLines) > 1 ? "-webkit-box" : "block",
+              textOverflow: "ellipsis",
+              whiteSpace: Math.max(1, dropdownItemTextMaxLines) > 1 ? undefined : "nowrap",
+              WebkitLineClamp: Math.max(1, dropdownItemTextMaxLines) > 1 ? Math.max(1, dropdownItemTextMaxLines) : undefined,
+              WebkitBoxOrient: Math.max(1, dropdownItemTextMaxLines) > 1 ? "vertical" : undefined,
             });
 
             return (
